@@ -14,8 +14,12 @@ const SECTIONS = [
   { id: "awards", title: "Awards", file: "awards.md", render: renderAwards },
 ];
 
-// 논문 썸네일 자동 탐색 확장자
-const THUMB_EXT = ["png", "jpg", "jpeg", "webp"];
+// 논문 썸네일 자동 탐색 확장자 (앞에서부터 시도)
+const THUMB_EXT = ["png", "jpg", "jpeg", "webp", "pdf"];
+
+// PDF 썸네일을 그릴 때만 불러오는 pdf.js
+const PDFJS = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.min.mjs";
+const PDFJS_WORKER = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.worker.min.mjs";
 
 // 논문 항목에서 버튼으로 보여줄 링크 키 (이 순서대로 표시)
 const PUB_LINKS = ["paper", "arxiv", "pdf", "code", "project", "slides", "poster", "video", "bibtex"];
@@ -208,6 +212,28 @@ function renderAwards(doc) {
   return `<table>${byDate(doc.entries).map(e => `<tr><td>${when(e)}</td><td>${inline(e.title)}${desc(e)}</td></tr>`).join("")}</table>`;
 }
 
+/* ---------- PDF 썸네일 ---------- */
+
+let pdfjs;
+// PDF 첫 페이지를 썸네일 폭에 맞춰 그려서 이미지 URL로 돌려준다. 파일이 없으면 reject.
+async function pdfThumb(src, width) {
+  const res = await fetch(src);
+  if (!res.ok) throw new Error(src);
+  if (!pdfjs) {
+    pdfjs = await import(PDFJS);
+    pdfjs.GlobalWorkerOptions.workerSrc = PDFJS_WORKER;
+  }
+  const pdf = await pdfjs.getDocument({ data: await res.arrayBuffer() }).promise;
+  const page = await pdf.getPage(1);
+  const base = page.getViewport({ scale: 1 });
+  const viewport = page.getViewport({ scale: Math.max(1, (width || 150) * 2 * devicePixelRatio / base.width) });
+  const canvas = document.createElement("canvas");
+  canvas.width = viewport.width;
+  canvas.height = viewport.height;
+  await page.render({ canvasContext: canvas.getContext("2d"), viewport }).promise;
+  return canvas.toDataURL("image/png");
+}
+
 /* ---------- 조립 ---------- */
 
 async function load(file) {
@@ -236,15 +262,16 @@ async function main() {
   document.getElementById("toc").innerHTML = navHtml;
   document.getElementById("mnav").innerHTML = navHtml;
 
-  // 논문 썸네일: 후보 경로를 차례로 시도해서 처음 열리는 이미지로 교체
+  // 논문 썸네일: 후보 경로를 차례로 시도해서 처음 열리는 이미지(또는 PDF 첫 페이지)로 교체
   root.querySelectorAll(".th[data-src]").forEach(el => {
     const list = el.dataset.src.split("|").filter(Boolean);
+    const show = src => { const img = new Image(); img.alt = el.textContent; img.src = src; el.replaceChildren(img); };
     const next = () => {
       const src = list.shift();
       if (!src) return;
+      if (/\.pdf$/i.test(src)) { pdfThumb(src, el.clientWidth).then(show, next); return; }
       const img = new Image();
-      img.alt = el.textContent;
-      img.onload = () => el.replaceChildren(img);
+      img.onload = () => show(src);
       img.onerror = next;
       img.src = src;
     };

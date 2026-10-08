@@ -77,9 +77,11 @@ CV/
 
 **썸네일 찾는 순서**
 1. `thumb`에 적은 경로
-2. `images/pubs/<short>.png|jpg|jpeg|webp` — 예: `short: Foveated Compression` 이면
+2. `images/pubs/<short>.png|jpg|jpeg|webp|pdf` — 예: `short: Foveated Compression` 이면
    `images/pubs/Foveated Compression.png` 또는 `images/pubs/foveated-compression.png`
 3. 둘 다 없으면 `short` 글자를 표시
+
+PDF는 **첫 페이지**를 썸네일로 그린다(논문 그림을 PDF로 저장한 경우 그대로 넣으면 됨). 같은 이름의 이미지 파일이 있으면 이미지가 우선. PDF 렌더링용 pdf.js 는 PDF 썸네일이 있을 때만 불러온다.
 
 ### `news.md`
 

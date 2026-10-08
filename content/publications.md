@@ -5,7 +5,7 @@
   - tag: Spotlight                     (선택: Oral / Spotlight / Best Paper ...)
   - topic: Multimodal, Preprint        (필터 버튼. 쉼표로 여러 개)
   - authors: **Your Name**, Coauthor A  (본인 이름은 **굵게**)
-  - thumb: images/sparsemm.png         (선택: 썸네일 이미지. 없으면 short 글자)
+  - thumb: images/sparsemm.png         (선택: 썸네일 이미지/PDF. 없으면 images/pubs/<short>.png|jpg|webp|pdf 자동 탐색, 그것도 없으면 short 글자)
   - short: SparseMM
   - paper / arxiv / pdf / code / project / slides / poster / video / bibtex: 링크
   그 아래 일반 문장은 한 줄 요약으로 표시됩니다(선택).
