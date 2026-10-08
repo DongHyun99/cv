@@ -58,7 +58,7 @@ td:first-child { color: var(--mut); width: 110px; white-space: nowrap; padding-r
 .year { font-size: 13px; font-weight: 700; color: var(--mut); margin: 22px 0 2px; }
 .pub { display: flex; gap: 16px; padding: 14px 0; border-bottom: 1px solid var(--line); }
 .pub h3 { font-size: 15px; margin: 3px 0 2px; line-height: 1.4; }
-.th { width: 150px; height: 100px; border-radius: 8px; background: var(--soft); flex-shrink: 0; object-fit: cover; display: grid; place-items: center; font-size: 12px; font-weight: 700; color: var(--ac); text-align: center; padding: 4px; }
+.th { position: relative; overflow: hidden; width: 150px; height: 100px; border-radius: 8px; background: var(--soft); flex-shrink: 0; display: grid; place-items: center; font-size: 12px; font-weight: 700; color: var(--ac); text-align: center; padding: 4px; }
 .ven { font-size: 12px; font-weight: 700; color: var(--ac); text-transform: uppercase; letter-spacing: .04em; }
 .hl { display: inline-block; font-size: 11px; border-radius: 4px; padding: 0 6px; margin-left: 6px; text-transform: none; letter-spacing: 0; font-weight: 700; background: var(--b, #fdecec); color: var(--f, #c2410c); }
 .au { font-size: 13px; color: var(--mut); }
@@ -84,8 +84,9 @@ td:first-child { color: var(--mut); width: 110px; white-space: nowrap; padding-r
 
 footer { margin-top: 64px; padding-top: 20px; border-top: 1px solid var(--line); color: var(--mut); font-size: 13px; }
 
-.th img { width: 100%; height: 100%; object-fit: cover; border-radius: 8px; }
-.th:has(img) { padding: 0; background: none; }
+/* 이미지는 칸 안에 고정하고, 그림 전체가 잘리지 않게 비율 유지 */
+.th img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+.th:has(img) { padding: 0; background: #fff; border: 1px solid var(--line); }
 
 @media (max-width: 1000px) {
   .layout { grid-template-columns: 130px minmax(0, 1fr); gap: 28px; }
@@ -101,7 +102,7 @@ footer { margin-top: 64px; padding-top: 20px; border-top: 1px solid var(--line);
   .links { justify-content: center; }
   .rg { grid-template-columns: 1fr; }
   .pub { flex-direction: column; gap: 10px; }
-  .th { width: 100%; height: 160px; }
+  .th { width: 100%; height: auto; aspect-ratio: 16 / 9; max-height: 220px; }
   .th:not(:has(img)) { display: none; }
   td:first-child { width: 80px; }
 }
