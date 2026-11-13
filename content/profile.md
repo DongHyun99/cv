@@ -7,17 +7,17 @@
 -->
 
 - photo: images/profile.jpg
-- keywords: Vision-Language Models · Multimodal Learning · Interpretable Machine Learning · Object-Centric Learning 
+- keywords: Vision Foundation Models · Multimodal Learning · Efficient VLMs
 - position: Post-M.S. Researcher, Visual Intelligence Research Section
 - affiliation: ETRI
 - email: mpolio2@etri.re.kr
 - scholar: https://scholar.google.com/citations?user=nJieBt0AAAAJ
-- github: https://github.com/Donghyun99
+- alphaxiv: https://www.alphaxiv.org/@donghyun-han
+- github: https://github.com/DongHyun99
 - linkedin: https://www.linkedin.com/in/donghyun99/
-<!-- - stats: 3 first-author papers (NeurIPS, ICLR, CVPR) · 1 oral · Outstanding Reviewer Award (CVPR 2026) -->
+- cv: files/cv.pdf
+I am a researcher at **ETRI**, Korea, working on vision foundation models and multimodal learning.
 
-I am a Post-M.S. Researcher in the Visual Intelligence Research Section at the **Electronics and Telecommunications Research Institute (ETRI)**, Korea, working on **vision foundation models** and **multimodal learning**.
+Pretrained vision models are each good at different things. I study how to **combine the models we already have** instead of training a new one, by learning which expert to trust for each task. I also work on **efficient vision-language models** that spend visual tokens only where detail matters.
 
-Large-scale pretraining has produced many vision foundation models whose strengths are complementary rather than uniform: some excel at semantics, others at geometry or fine localization, and no single model is best at everything. Rather than retraining or distilling yet another monolithic backbone, I am interested in **learning how to compose the representations we already have**, and in models that **know when each expert is competent** so they rely on the right one. In the national R&D project *Competency-Aware Machine Learning (CAML)*, I pursue this through competency-aware expert routing and the orchestration of frozen foundation models.
-
-I am also interested in **efficient vision-language models**. Visual tokens dominate their inference cost, yet fine-grained detail matters only in parts of an image, so I study *where* visual fidelity should be spent under a limited token budget.
+I received my M.S. in Computer Science from Kyonggi University, where I worked on shadow removal.

@@ -8,6 +8,7 @@
 const SECTIONS = [
   { id: "news", title: "News", file: "news.md", render: renderNews },
   { id: "publications", title: "Publications", file: "publications.md", render: renderPubs },
+  { id: "patents", title: "Patents", file: "patents.md", render: renderPatents },
   { id: "research", title: "Research", file: "research.md", render: renderResearch },
   { id: "experience", title: "Experience", file: "experience.md", render: renderTimeline },
   { id: "education", title: "Education", file: "education.md", render: renderTimeline },
@@ -25,13 +26,14 @@ const PDFJS_WORKER = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.4.168/pdf.
 const PUB_LINKS = ["paper", "arxiv", "pdf", "code", "project", "slides", "poster", "video", "bibtex"];
 
 const PROFILE_LINKS = [
-  ["email", "Email", "mail"], ["scholar", "Scholar", "cap"], ["github", "GitHub", "code"],
+  ["email", "Email", "mail"], ["scholar", "Scholar", "cap"], ["alphaxiv", "alphaXiv", "alpha"], ["github", "GitHub", "github"],
   ["linkedin", "LinkedIn", "in"], ["twitter", "X", "x"], ["cv", "CV", "doc"],
 ];
 const ICON = {
   mail: '<path d="M3 6h18v12H3z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M3 7l9 6 9-6" fill="none" stroke="currentColor" stroke-width="2"/>',
   cap: '<path d="M12 4 1 9.5l11 5.5 11-5.5z"/><path d="M5 12.5V17c2 2 12 2 14 0v-4.5l-7 3.5z"/>',
-  code: '<path d="M8 6 2 12l6 6M16 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.2"/>',
+  alpha: '<text x="12" y="18.5" text-anchor="middle" font-family="Georgia, serif" font-size="21" font-weight="700">α</text>',
+  github: '<path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.1.79-.25.79-.56v-1.97c-3.2.7-3.87-1.54-3.87-1.54-.52-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.03 1.76 2.69 1.25 3.35.96.1-.74.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.28 1.18-3.09-.12-.29-.51-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.18 1.83 1.18 3.09 0 4.42-2.69 5.39-5.25 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/>',
   in: '<rect x="2" y="2" width="20" height="20" rx="4"/><path d="M7 10v7M7 7v.01M11 17v-7M11 13c0-2 1.2-3 2.8-3S16.5 11 16.5 13v4" stroke="#fff" stroke-width="2" fill="none"/>',
   x: '<path d="M4 4l16 16M20 4 4 20" stroke="currentColor" stroke-width="2.4"/>',
   doc: '<path d="M6 2h9l5 5v15H6z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M9 12h7M9 16h7" stroke="currentColor" stroke-width="2"/>',
@@ -139,13 +141,12 @@ const badge = (t, cls = "bd") => t ? `<span class="${cls}" ${tagStyle(t)}>${esc(
 function renderProfile(doc) {
   const f = doc.fields;
   const name = doc.title || "Your Name";
-  document.title = name;
   const photo = f.photo
     ? `<img class="photo" src="${esc(f.photo)}" alt="${esc(name)}" onerror="this.replaceWith(Object.assign(document.createElement('div'),{className:'photo',textContent:'PHOTO'}))">`
     : `<div class="photo">PHOTO</div>`;
   const links = PROFILE_LINKS.filter(([k]) => f[k]).map(([k, label, ic]) => {
     const href = k === "email" && !f[k].startsWith("mailto:") ? "mailto:" + f[k] : f[k];
-    return `<a href="${esc(href)}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor">${ICON[ic]}</svg>${label}</a>`;
+    return `<a href="${esc(href)}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">${ICON[ic]}</svg>${label}</a>`;
   }).join("");
   return `<section id="about"><div class="hero">${photo}<div>
       <h1>${inline(name)}</h1>
@@ -161,9 +162,14 @@ function renderNews(doc) {
     `<tr><td>${when(e)}</td><td>${badge(e.fields.type)}${inline(e.title)}${desc(e)}</td></tr>`).join("")}</table>`;
 }
 
+const topicsOf = p => [...new Set((p.fields.topic || "").split(",").map(t => t.trim()).filter(Boolean))];
+
 function renderPubs(doc) {
   const pubs = byDate(doc.entries);
-  const topics = [...new Set(pubs.flatMap(p => (p.fields.topic || "").split(",").map(t => t.trim()).filter(Boolean)))];
+  // 필터 버튼: 논문 수가 많은 주제부터, 같으면 알파벳순
+  const count = new Map();
+  for (const p of pubs) for (const t of topicsOf(p)) count.set(t, (count.get(t) || 0) + 1);
+  const topics = [...count.keys()].sort((a, b) => count.get(b) - count.get(a) || a.localeCompare(b));
   const filters = topics.length
     ? `<div class="filters"><button class="on" data-f="">All</button>${topics.map(t => `<button data-f="${esc(t)}">${esc(t)}</button>`).join("")}</div>`
     : "";
@@ -175,29 +181,55 @@ function renderPubs(doc) {
     // thumb 를 적었으면 그 이미지, 아니면 images/pubs/<short 그대로 또는 소문자-하이픈>.(png|jpg|jpeg|webp) 를 찾아보고, 없으면 short 글자
     const slug = (f.short || "").trim();
     const names = [...new Set([slug, slug.toLowerCase().replace(/[^\w]+/g, "-").replace(/^-|-$/g, "")])].filter(Boolean);
-    const cands = (f.thumb ? [f.thumb] : names.flatMap(n => THUMB_EXT.map(x => `images/pubs/${n}.${x}`))).map(encodeURI);
-    const thumb = `<div class="th" data-src="${esc(cands.join("|"))}">${esc(slug)}</div>`;
-    const btns = PUB_LINKS.filter(k => f[k]).map(k => `<a href="${esc(f[k])}" target="_blank" rel="noopener">${k}</a>`).join("");
-    html += `<div class="pub" data-year="${y}" data-topic="${esc((f.topic || "").split(",").map(t => t.trim()).join("|"))}">${thumb}<div>
+    let cands = f.thumb ? [f.thumb] : names.flatMap(n => THUMB_EXT.map(x => `images/pubs/${n}.${x}`));
+    // 빌드 때는 실제 있는 파일만 남기고, 이미지면 <img> 로 바로 넣는다(브라우저가 후보를 더듬지 않게)
+    if (BUILD.exists) cands = cands.filter(BUILD.exists);
+    const thumb = BUILD.exists && cands[0] && !/\.pdf$/i.test(cands[0])
+      ? `<div class="th"><img src="${esc(encodeURI(cands[0]))}" alt="${esc(slug)}"></div>`
+      : `<div class="th"${cands.length ? ` data-src="${esc(cands.map(encodeURI).join("|"))}"` : ""}>${esc(slug)}</div>`;
+    // bibtex 가 .bib 파일이면 새 탭 대신 항목 아래에 펼쳐 보여주고 복사 버튼을 단다
+    const bib = /\.bib$/i.test(f.bibtex || "") ? f.bibtex : "";
+    const btns = PUB_LINKS.filter(k => f[k]).map(k => k === "bibtex" && bib
+      ? `<button type="button" data-bib="${esc(encodeURI(bib))}">bibtex</button>`
+      : `<a href="${esc(f[k])}" target="_blank" rel="noopener">${k}</a>`).join("");
+    html += `<div class="pub" data-year="${y}" data-topic="${esc(topicsOf(p).join("|"))}">${thumb}<div>
       <div class="ven">${inline(f.venue || "")}${f.tag ? f.tag.split(",").map(t => badge(t.trim(), "hl")).join("") : ""}</div>
       <h3>${inline(p.title)}</h3><div class="au">${inline(f.authors || "")}</div>${desc(p)}
-      ${btns ? `<div class="act">${btns}</div>` : ""}</div></div>`;
+      ${btns ? `<div class="act">${btns}</div>` : ""}
+      ${bib ? bibBox(bib) : ""}</div></div>`;
   }
   return html;
 }
 
+// 빌드 때는 .bib 내용을 미리 넣어 둔다(크롤러도 읽을 수 있게). 브라우저에서는 처음 펼칠 때 불러온다.
+function bibBox(path) {
+  const text = BUILD.read ? BUILD.read(path) : null;
+  return `<div class="bibbox" hidden${text != null ? ` data-loaded="1"` : ""}><pre>${text != null ? esc(text.trim()) : ""}</pre><button type="button" class="copy">Copy</button></div>`;
+}
+
 const MAX_RESEARCH_TAGS = 2;  // Research 카드에 보이는 태그 수
 
+// 한 줄에 한 과제: 왼쪽 기간·기관 | 오른쪽 제목 · 태그 · 설명 · 성과
 function renderResearch(doc) {
-  return `<div class="rg">${byDate(doc.entries).map(e => {
+  return `<div class="rl">${byDate(doc.entries).map(e => {
     const f = e.fields;
     const tags = (f.tag || "").split(",").map(t => t.trim()).filter(Boolean).slice(0, MAX_RESEARCH_TAGS).map(t => `<span class="rt">${esc(t)}</span>`).join("");
-    const meta = [f.org, f.period].filter(Boolean).map(inline).join(" · ");
-    return `<div class="rc${/^(yes|true|1)$/i.test(f.wide || "") ? " wide" : ""}">
-      <div class="rh">${tags}${meta ? `<span class="rp">${meta}</span>` : ""}</div>
-      <h3>${inline(e.title)}</h3><div class="rb">${renderBody(e.body)}</div>
-      ${f.metric ? `<div class="met">${inline(f.metric)}</div>` : ""}</div>`;
+    const side = [f.period && `<span class="rp">${inline(f.period)}</span>`, f.org && `<span class="ro">${inline(f.org)}</span>`].filter(Boolean).join("");
+    return `<article class="rc">
+      <div class="rs">${side}</div>
+      <div class="rm"><h3>${inline(e.title)}</h3>${tags ? `<div class="rh">${tags}</div>` : ""}
+      <div class="rb">${renderBody(e.body)}</div>
+      ${f.metric ? `<div class="met"><span>Output</span>${inline(f.metric)}</div>` : ""}</div></article>`;
   }).join("")}</div>`;
+}
+
+// 특허: 날짜 | 국가 배지 + 제목, 아래에 출원번호 · 상태
+function renderPatents(doc) {
+  return `<table>${byDate(doc.entries).map(e => {
+    const f = e.fields;
+    const sub = [f.number && `Application No. ${inline(f.number)}`, f.status && inline(f.status)].filter(Boolean).join(" · ");
+    return `<tr><td>${when(e)}</td><td>${badge(f.office)}${inline(e.title)}${sub ? `<br><span class="mut">${sub}</span>` : ""}${desc(e)}</td></tr>`;
+  }).join("")}</table>`;
 }
 
 // experience / education 공용: 기간 | 제목 + role/degree + 설명
@@ -236,6 +268,19 @@ async function pdfThumb(src, width) {
 
 /* ---------- 조립 ---------- */
 
+// 빌드 스크립트(scripts/build.js)가 채우는 파일 접근 함수. 브라우저에서는 비어 있다.
+const BUILD = { exists: null, read: null };
+
+// profile + 섹션 문서들 → 페이지 HTML. 브라우저와 빌드가 같이 쓴다.
+function renderPage(profile, docs) {
+  const shown = SECTIONS.map((s, i) => ({ ...s, doc: docs[i] })).filter(s => s.doc && s.doc.entries.length);
+  const content = (profile ? renderProfile(profile) : "") +
+    shown.map(s => `<section id="${s.id}"><h2>${s.title}</h2>${s.render(s.doc)}</section>`).join("") +
+    `<footer>© ${new Date().getFullYear()} ${inline(profile?.title || "")}</footer>`;
+  const nav = [{ id: "about", title: "About" }, ...shown].map(s => `<a href="#${s.id}">${s.title}</a>`).join("");
+  return { title: profile?.title || "Your Name", content, nav };
+}
+
 async function load(file) {
   const r = await fetch("content/" + file, { cache: "no-cache" });
   if (!r.ok) return null;
@@ -244,23 +289,21 @@ async function load(file) {
 
 async function main() {
   const root = document.getElementById("content");
-  let profile, docs;
-  try {
-    [profile, ...docs] = await Promise.all([load("profile.md"), ...SECTIONS.map(s => load(s.file))]);
-  } catch (e) {
-    root.innerHTML = `<p class="error">content/*.md 파일을 불러오지 못했어요. 파일을 직접 열지 말고 웹 서버로 열어 주세요:<br><code>python3 -m http.server 8000</code></p>`;
-    return;
+  // 배포본은 빌드 때 내용이 이미 들어 있다. 로컬 미리보기는 여기서 md 를 읽어 그린다.
+  if (!root.dataset.prerendered) {
+    let profile, docs;
+    try {
+      [profile, ...docs] = await Promise.all([load("profile.md"), ...SECTIONS.map(s => load(s.file))]);
+    } catch (e) {
+      root.innerHTML = `<p class="error">content/*.md 파일을 불러오지 못했어요. 파일을 직접 열지 말고 웹 서버로 열어 주세요:<br><code>python3 -m http.server 8000</code></p>`;
+      return;
+    }
+    const page = renderPage(profile, docs);
+    document.title = page.title;
+    root.innerHTML = page.content;
+    document.getElementById("toc").innerHTML = page.nav;
+    document.getElementById("mnav").innerHTML = page.nav;
   }
-  const shown = SECTIONS.map((s, i) => ({ ...s, doc: docs[i] })).filter(s => s.doc && s.doc.entries.length);
-
-  root.innerHTML = (profile ? renderProfile(profile) : "") +
-    shown.map(s => `<section id="${s.id}"><h2>${s.title}</h2>${s.render(s.doc)}</section>`).join("") +
-    `<footer>© ${new Date().getFullYear()} ${inline(profile?.title || "")}</footer>`;
-
-  const navItems = [{ id: "about", title: "About" }, ...shown];
-  const navHtml = navItems.map(s => `<a href="#${s.id}">${s.title}</a>`).join("");
-  document.getElementById("toc").innerHTML = navHtml;
-  document.getElementById("mnav").innerHTML = navHtml;
 
   // 논문 썸네일: 후보 경로를 차례로 시도해서 처음 열리는 이미지(또는 PDF 첫 페이지)로 교체
   root.querySelectorAll(".th[data-src]").forEach(el => {
@@ -288,6 +331,25 @@ async function main() {
     });
   });
 
+  // BibTeX: 처음 누를 때 파일을 불러오고, 누를 때마다 펼침/접힘
+  root.querySelectorAll("[data-bib]").forEach(b => b.onclick = async () => {
+    const box = b.closest(".pub").querySelector(".bibbox");
+    const pre = box.querySelector("pre");
+    if (!box.dataset.loaded) {
+      const r = await fetch(b.dataset.bib).catch(() => null);
+      pre.textContent = r?.ok ? (await r.text()).trim() : "BibTeX file not found.";
+      box.dataset.loaded = "1";
+    }
+    box.hidden = !box.hidden;
+    b.classList.toggle("on", !box.hidden);
+  });
+  root.querySelectorAll(".bibbox .copy").forEach(c => c.onclick = () => {
+    const pre = c.previousElementSibling;
+    navigator.clipboard.writeText(pre.textContent)
+      .then(() => { c.textContent = "Copied"; setTimeout(() => c.textContent = "Copy", 1500); })
+      .catch(() => getSelection().selectAllChildren(pre));
+  });
+
   // 목차: 지금 보고 있는 섹션 표시
   const links = [...document.querySelectorAll("#toc a")];
   const spy = () => {
@@ -301,4 +363,5 @@ async function main() {
   if (location.hash) document.getElementById(location.hash.slice(1))?.scrollIntoView();
 }
 
-main();
+if (typeof module !== "undefined") module.exports = { SECTIONS, BUILD, parse, renderPage };
+else main();

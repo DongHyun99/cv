@@ -1,6 +1,16 @@
 # CV
 
-개인 연구자 홈페이지. 내용은 전부 `content/*.md`에 쓰고, 페이지가 열릴 때 읽어서 `date` 기준 최신순으로 자동 정렬한다. 빌드 과정 없음.
+개인 연구자 홈페이지. 내용은 전부 `content/*.md`에 쓰고, `date` 기준 최신순으로 자동 정렬된다. md 만 고치고 push 하면 된다.
+
+## 배포
+
+`main`에 push하면 GitHub Actions(`.github/workflows/pages.yml`)가 `node scripts/build.js`로 `content/*.md`를 `index.html`에 미리 그려 넣은 `_site/`를 만들어 GitHub Pages에 올린다. 그래서 JavaScript를 실행하지 않는 크롤러나 AI 도구(Claude, ChatGPT 등)도 내용을 읽을 수 있다. 저장소의 `index.html`은 빈 틀을 유지하고, 빌드 결과(`_site/`)는 커밋하지 않는다.
+
+배포본을 로컬에서 확인하려면:
+
+```bash
+node scripts/build.js && python3 -m http.server 8000 -d _site
+```
 
 ## 미리보기
 
@@ -18,6 +28,7 @@ CV/
 │   ├── profile.md        이름 · 사진 경로 · 링크 · 소개
 │   ├── news.md
 │   ├── publications.md
+│   ├── patents.md
 │   ├── research.md
 │   ├── experience.md
 │   ├── education.md
@@ -26,7 +37,8 @@ CV/
 │   ├── profile.jpg       프로필 사진 (profile.md 의 photo 경로)
 │   └── pubs/             논문 썸네일 — 파일명 = short 값 (아래 참고)
 ├── files/
-│   └── cv.pdf            CV 파일 (profile.md 의 cv 경로) — 지금은 .gitignore 로 공개 제외
+│   ├── cv.pdf            CV 파일 (profile.md 의 cv 경로) — 공개됨
+│   └── bib/              논문 BibTeX (.bib)
 ├── assets/               페이지 코드 (app.js, style.css) — 보통 안 건드림
 └── theme-samples/        테마 고를 때 만든 시안 (사이트와 무관)
 ```
@@ -58,7 +70,7 @@ CV/
 | `photo` | 사진 경로, 예: `images/profile.jpg` |
 | `keywords` | 이름 아래 파란 키워드 줄 |
 | `position`, `affiliation` | 직함, 소속 |
-| `email`, `scholar`, `github`, `linkedin`, `twitter`, `cv` | 있는 것만 링크 버튼으로 표시 |
+| `email`, `scholar`, `alphaxiv`, `github`, `linkedin`, `twitter`, `cv` | 있는 것만 링크 버튼으로 표시 |
 | `stats` | 소개 아래 회색 요약 한 줄 |
 | 일반 문단 | 소개(bio). `**굵게**` 부분은 포인트 색으로 강조 |
 
@@ -69,11 +81,12 @@ CV/
 | `date` | 정렬 + 연도 구분(2026 / 2025 …) 기준 |
 | `venue` | 학회·저널명 |
 | `tag` | 배지. 쉼표로 여러 개 가능: `Oral, Best Paper` |
-| `topic` | 필터 버튼. 쉼표로 여러 개: `Vision-Language, Token Compression` |
+| `topic` | 필터 버튼. 논문당 1–2개, 여러 논문에 같은 이름을 재사용: `Vision-Language, Efficient Inference`. 버튼은 해당 논문이 많은 주제부터 정렬 |
 | `authors` | 저자. 본인 이름은 `**굵게**` |
 | `short` | 썸네일 대신 보일 짧은 이름 + 썸네일 파일명 |
 | `thumb` | (선택) 썸네일 경로를 직접 지정 |
-| `paper` `arxiv` `pdf` `code` `project` `slides` `poster` `video` `bibtex` | 있는 것만 버튼으로 표시 |
+| `paper` `arxiv` `pdf` `code` `project` `slides` `poster` `video` | 있는 것만 버튼으로 표시 |
+| `bibtex` | `.bib` 파일 경로(예: `files/bib/TAVER.bib`)면 버튼을 눌렀을 때 항목 아래에 펼쳐지고 Copy 버튼이 생김. 일반 URL이면 링크 |
 
 **썸네일 찾는 순서**
 1. `thumb`에 적은 경로
@@ -82,6 +95,22 @@ CV/
 3. 둘 다 없으면 `short` 글자를 표시
 
 PDF는 **첫 페이지**를 썸네일로 그린다(논문 그림을 PDF로 저장한 경우 그대로 넣으면 됨). 같은 이름의 이미지 파일이 있으면 이미지가 우선. PDF 렌더링용 pdf.js 는 PDF 썸네일이 있을 때만 불러온다.
+
+PDF 썸네일은 방문할 때마다 PDF와 pdf.js를 받아서 느리므로, 같은 이름의 PNG로 변환해 두는 것을 권장한다:
+
+```bash
+uv run --with pymupdf python -c "import pymupdf,sys;p=pymupdf.open(sys.argv[1])[0];z=800/p.rect.width;p.get_pixmap(matrix=pymupdf.Matrix(z,z)).save(sys.argv[1][:-4]+'.png')" 'images/pubs/COVE.pdf'
+```
+
+### `patents.md`
+
+| 키 | 설명 |
+|---|---|
+| `## 특허 제목` | |
+| `office` | 배지: `US`, `KR`, `PCT` … |
+| `number` | (선택) 출원·등록 번호 |
+| `status` | (선택) `Filed`, `Granted` … |
+| `date` | 정렬 기준 (출원일) |
 
 ### `news.md`
 
@@ -93,18 +122,17 @@ PDF는 **첫 페이지**를 썸네일로 그린다(논문 그림을 PDF로 저�
 
 ### `research.md`
 
-참여 과제·연구 주제 단위로 쓴다.
+참여 과제·연구 주제 단위로 쓴다. 한 줄에 한 과제씩, 왼쪽에 기간·기관, 오른쪽에 제목·태그·설명·성과가 표시된다(모바일에서는 위아래로).
 
 | 키 | 설명 |
 |---|---|
 | `## 과제/연구 이름` | 예: `Competency-Aware Machine Learning (CAML)` |
 | `tag` | 분야·과제 키워드, 쉼표로 **최대 2개** (3개 이상 적으면 앞의 2개만 표시): `National R&D, Vision Foundation Models` |
-| `org`, `period` | (선택) 수행 기관, 기간 — 카드 오른쪽 위 |
-| `metric` | (선택) 성과 한 줄 — 카드 맨 아래 초록 글씨 |
-| `wide` | (선택) `yes` 면 카드를 한 줄 전체 너비로 |
+| `org`, `period` | (선택) 수행 기관, 기간 — 왼쪽 열 |
+| `metric` | (선택) 성과 한 줄 — 맨 아래 초록 `OUTPUT` 줄 |
 | `date` | (선택) 있으면 최신순, 없으면 적은 순서대로 |
 
-그 아래 일반 문단은 설명, `- ` 로 시작하는 줄은 글머리표 목록이 된다. 글머리표를 `단어: …` 처럼 콜론으로 시작하면 키로 읽히니 피할 것(`- **TAVER.** …` 처럼 쓰면 안전).
+그 아래 첫 문단은 "무엇을 왜 했는지" 한두 문장(진하게 표시), `- ` 로 시작하는 줄은 내가 한 일 목록이 된다. 글머리표를 `단어: …` 처럼 콜론으로 시작하면 키로 읽히니 피할 것(`- **TAVER** — …` 처럼 쓰면 안전).
 
 ### `experience.md` / `education.md`
 

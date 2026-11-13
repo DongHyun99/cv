@@ -5,6 +5,10 @@
   아무 순서로 추가해도 됩니다.
 -->
 
+## Filed a **KR patent application** on restoring neural networks with difference-based correction (No. 2026-0216998).
+- date: 2026-11-03
+- type: Patent
+
 ## **Foveated Compression** accepted at the **NeurIPS 2026 Workshop (VLM4RWD)**.
 - date: 2026-10
 - type: Paper
@@ -21,7 +25,7 @@
 - date: 2026-06-25
 - type: Patent
 
-## Filed a **KR patent application** on task-adaptive visual expert routing.
+## Filed a **KR patent application** on task-adaptive visual expert routing (No. 2026-0103216).
 - date: 2026-06-08
 - type: Patent
 

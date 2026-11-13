@@ -1,0 +1,395 @@
+%
+% Academic CV LaTeX Template
+% Author: Dubasi Pavan Kumar
+% LinkedIn: https://www.linkedin.com/in/im-pavankumar/
+% License: MIT
+%
+% For errors, suggestions, or improvements, please contact:
+% Email: pavankumard.pg19.ma@nitp.ac.in
+%
+% 이 파일을 컴파일한 PDF 를 files/cv.pdf 로 저장하면 홈페이지의 CV 버튼에 연결된다.
+% files/cv.pdf 는 공개되므로 전화번호 같은 개인정보는 넣지 않는다.
+%
+
+\documentclass[a4paper,11pt]{article}
+
+% Package imports
+\usepackage{latexsym}
+\usepackage{xcolor}
+\usepackage{float}
+\usepackage{ragged2e}
+\usepackage[empty]{fullpage}
+\usepackage{wrapfig}
+\usepackage{tabularx}
+\usepackage{titlesec}
+\usepackage{geometry}
+\usepackage{marvosym}
+\usepackage{verbatim}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage{multicol}
+\usepackage{graphicx}
+\usepackage{cfr-lm}
+\usepackage[T1]{fontenc}
+\usepackage{fontawesome5}
+\usepackage{kotex}
+
+% Color definitions
+\definecolor{darkblue}{RGB}{0,0,139}
+
+% Page layout
+\setlength{\multicolsep}{0pt}
+\pagestyle{fancy}
+\fancyhf{} % clear all header and footer fields
+\fancyfoot{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+\geometry{left=1.4cm, top=1.0cm, right=1.2cm, bottom=1cm}
+\setlength{\footskip}{5pt} % Addressing fancyhdr warning
+
+% Hyperlink setup (loaded once, after fancyhdr)
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=darkblue,
+    filecolor=darkblue,
+    urlcolor=darkblue,
+}
+
+% Custom box settings
+\usepackage[most]{tcolorbox}
+\tcbset{
+    frame code={},
+    center title,
+    left=0pt,
+    right=0pt,
+    top=0pt,
+    bottom=0pt,
+    colback=gray!20,
+    colframe=white,
+    width=\dimexpr\textwidth\relax,
+    enlarge left by=-2mm,
+    boxsep=4pt,
+    arc=0pt,outer arc=0pt,
+}
+
+% URL style
+\urlstyle{same}
+
+% Text alignment
+\raggedright
+\setlength{\tabcolsep}{0in}
+
+% Section formatting
+\titleformat{\section}{
+  \vspace{-4pt}\scshape\raggedright\large
+}{}{0em}{}[\color{black}\titlerule \vspace{-7pt}]
+
+% Custom commands
+\newcommand{\resumeItem}[2]{
+  \item{
+    \textbf{#1}{\hspace{0.5mm}#2 \vspace{-0.5mm}}
+  }
+}
+
+\newcommand{\resumePOR}[3]{
+\vspace{0.5mm}\item
+    \begin{tabular*}{0.97\textwidth}[t]{l@{\extracolsep{\fill}}r}
+        \textbf{#1}\hspace{0.3mm}#2 & \textit{\small{#3}}
+    \end{tabular*}
+    \vspace{-2mm}
+}
+
+\newcommand{\resumeSubheading}[4]{
+\vspace{0.5mm}\item
+    \begin{tabular*}{0.98\textwidth}[t]{l@{\extracolsep{\fill}}r}
+        \textbf{#1} & \textit{\footnotesize{#4}} \\
+        \textit{\footnotesize{#3}} &  \footnotesize{#2}\\
+    \end{tabular*}
+    \vspace{-2.4mm}
+}
+
+\newcommand{\resumeProject}[4]{
+\vspace{0.5mm}\item
+    \begin{tabular*}{0.98\textwidth}[t]{l@{\extracolsep{\fill}}r}
+        \textbf{#1} & \textit{\footnotesize{#3}} \\
+        \footnotesize{\textit{#2}} & \footnotesize{#4}
+    \end{tabular*}
+    \vspace{-2.4mm}
+}
+
+\newcommand{\resumeSubItem}[2]{\resumeItem{#1}{#2}\vspace{-4pt}}
+
+\renewcommand{\labelitemi}{$\vcenter{\hbox{\tiny$\bullet$}}$}
+\renewcommand{\labelitemii}{$\vcenter{\hbox{\tiny$\circ$}}$}
+
+\newcommand{\resumeSubHeadingListStart}{\begin{itemize}[leftmargin=*,labelsep=1mm]}
+\newcommand{\resumeHeadingSkillStart}{\begin{itemize}[leftmargin=*,itemsep=1.7mm, rightmargin=2ex]}
+\newcommand{\resumeItemListStart}{\begin{itemize}[leftmargin=*,labelsep=1mm,itemsep=0.5mm]}
+
+\newcommand{\resumeSubHeadingListEnd}{\end{itemize}\vspace{2mm}}
+\newcommand{\resumeHeadingSkillEnd}{\end{itemize}\vspace{-2mm}}
+\newcommand{\resumeItemListEnd}{\end{itemize}\vspace{-2mm}}
+\newcommand{\cvsection}[1]{%
+\vspace{2mm}
+\begin{tcolorbox}
+    \textbf{\large #1}
+\end{tcolorbox}
+    \vspace{-4mm}
+}
+
+\newcolumntype{L}{>{\raggedright\arraybackslash}X}%
+\newcolumntype{R}{>{\raggedleft\arraybackslash}X}%
+\newcolumntype{C}{>{\centering\arraybackslash}X}%
+
+% Commands for icon sizing and positioning
+\newcommand{\socialicon}[1]{\raisebox{-0.05em}{\resizebox{!}{1em}{#1}}}
+\newcommand{\ieeeicon}[1]{\raisebox{-0.3em}{\resizebox{!}{1.3em}{#1}}}
+
+% Font options
+\newcommand{\headerfonti}{\fontfamily{phv}\selectfont} % Helvetica-like (similar to Arial/Calibri)
+\newcommand{\headerfontii}{\fontfamily{ptm}\selectfont} % Times-like (similar to Times New Roman)
+\newcommand{\headerfontiii}{\fontfamily{ppl}\selectfont} % Palatino (elegant serif)
+\newcommand{\headerfontiv}{\fontfamily{pbk}\selectfont} % Bookman (readable serif)
+\newcommand{\headerfontv}{\fontfamily{pag}\selectfont} % Avant Garde-like (similar to Trebuchet MS)
+\newcommand{\headerfontvi}{\fontfamily{cmss}\selectfont} % Computer Modern Sans Serif
+\newcommand{\headerfontvii}{\fontfamily{qhv}\selectfont} % Quasi-Helvetica (another Arial/Calibri alternative)
+\newcommand{\headerfontviii}{\fontfamily{qpl}\selectfont} % Quasi-Palatino (another elegant serif option)
+\newcommand{\headerfontix}{\fontfamily{qtm}\selectfont} % Quasi-Times (another Times New Roman alternative)
+\newcommand{\headerfontx}{\fontfamily{bch}\selectfont} % Charter (clean serif font)
+
+\begin{document}
+\headerfontiii
+
+% Header
+\begin{center}
+    {\LARGE\textbf{Donghyun Han}}
+\end{center}
+\vspace{-6mm}
+
+\begin{center}
+    \small{
+    Post-M.S. Researcher, Visual Intelligence Research Section, ETRI, Daejeon, Korea \\
+    \faEnvelope\ \href{mailto:mpolio2@etri.re.kr}{mpolio2@etri.re.kr} \ $\vert$ \
+    \faHome\ \href{https://donghyun99.github.io/cv/}{donghyun99.github.io/cv} \ $\vert$ \
+    \faGraduationCap\ \href{https://scholar.google.com/citations?user=nJieBt0AAAAJ&hl=en}{Google Scholar} \ $\vert$ \
+    \faGithub\ \href{https://github.com/DongHyun99}{GitHub} \ $\vert$ \
+    \faLinkedin\ \href{https://www.linkedin.com/in/donghyun99/}{LinkedIn} \ $\vert$ \
+    \href{https://www.alphaxiv.org/@donghyun-han}{alphaXiv}
+    }
+\end{center}
+\vspace{-6mm}
+
+\section{\textbf{Research Interests}}
+\vspace{1mm}
+\small{
+Vision Foundation Models,
+Vision-Language Models,
+Efficient Multimodal Inference,
+Multimodal Learning,
+Representation Learning,
+Computer Vision
+}
+\vspace{-2mm}
+
+
+
+\section{\textbf{Research Experience}}
+\vspace{-0.4mm}
+  \resumeSubHeadingListStart
+  \resumeSubheading
+    {Electronics and Telecommunications Research Institute (ETRI)}{\textbf{Daejeon, Korea}}
+    {Post-M.S. Researcher}{Feb. 2025 -- Present}
+    \resumeItemListStart
+        \item \textbf{Visual Intelligence Research Section}
+        \item National R\&D Project: Competency-Aware Machine Learning (CAML)
+        \item Developed task-adaptive, competency-aware routing over heterogeneous vision foundation models (TAVER, ICT Express 2026).
+        \item Developed an orchestration framework that composes frozen vision foundation models for multi-task dense prediction (COVE).
+        \item Researched token-efficient vision-language models via foveated visual token compression (NeurIPS 2026 Workshop).
+    \resumeItemListEnd
+  \resumeSubheading
+    {Electronics and Telecommunications Research Institute (ETRI)}{\textbf{Daejeon, Korea}}
+    {Research Associate}{May 2024 -- Jan. 2025}
+    \resumeItemListStart
+        \item \textbf{Visual Intelligence Research Section}
+        \item Developed lightweight vision models for illegal banner and outdoor advertisement detection.
+        \item Classified outdoor advertisements by combining scene text recognition results with an LLM.
+    \resumeItemListEnd
+  \resumeSubheading
+    {Electronics and Telecommunications Research Institute (ETRI)}{\textbf{Daejeon, Korea}}
+    {Research Intern}{Jul. 2022 -- Aug. 2022}
+    \resumeItemListStart
+        \item \textbf{City \& Geospatial ICT Research Section}
+        \item Developed a texture calibration module for an integrated geospatial digital-twin prototype.
+    \resumeItemListEnd
+  \resumeSubHeadingListEnd
+\vspace{-6mm}
+
+\section{\textbf{Education}}
+\vspace{-0.4mm}
+\resumeSubHeadingListStart
+
+\resumeSubheading
+{Kyonggi University}{\textbf{Suwon, Korea}}
+{M.S. in Computer Science}{Mar. 2023 -- Feb. 2025}
+\resumeItemListStart
+\item GPA: 4.25/4.50
+\item Advisor: Prof. Byoung-Dai Lee
+\item Thesis:
+Development of a Multi-Resolution Fusion Transformer-based Diffusion Model for Improving the Generalization Performance of Shadow Removal.
+\resumeItemListEnd
+
+\resumeSubheading
+{Kyonggi University}{\textbf{Suwon, Korea}}
+{B.S. in Computer Science and Engineering}{Mar. 2017 -- Feb. 2023}
+\resumeItemListStart
+\item GPA: 3.61/4.50
+\resumeItemListEnd
+
+\resumeSubHeadingListEnd
+\vspace{-6mm}
+
+% =====================================================================================================
+
+\section{\textbf{Publications}}
+
+\noindent
+\textbf{Donghyun Han}, JangHo Park, and Yuseok Bae,
+``Foveated Compression: Selective High-Resolution Preservation for Token-Efficient VLMs,''
+\textbf{NeurIPS 2026 Workshop: VLM4RWD}, 2026.
+[\href{https://arxiv.org/abs/2610.07729}{arXiv}]
+[\href{https://github.com/DongHyun99/FoveatedVLM}{code}]
+
+\vspace{3mm}
+\noindent
+\textbf{Donghyun Han}, Yuseok Bae, Jung Uk Kim, and Hyung-Il Kim,
+``Learning to Orchestrate Vision Foundation Models for Multi-Task Dense Prediction,''
+\textbf{arXiv preprint}, 2026.
+[\href{https://arxiv.org/abs/2606.15765}{arXiv}]
+[\href{https://github.com/DongHyun99/COVE}{code}]
+
+\vspace{3mm}
+\noindent
+\textbf{Donghyun Han}, Yuseok Bae, and Byoung-Dai Lee,
+``Robust Shadow Removal via Cross-Attentive Multi-Resolution Diffusion Models,''
+\textbf{Neurocomputing}, 2026. (under review)
+
+\vspace{3mm}
+\noindent
+\textbf{Donghyun Han}, Yuseok Bae, Jung Uk Kim, and Hyung-Il Kim,
+``Task-adaptive Vision Experts Routing via Competency Learning Guided by Predictive Uncertainty,''
+\textbf{ICT Express}, 12 (3), 701--706, 2026. (SCIE, Q1)
+[\href{https://doi.org/10.1016/j.icte.2026.04.007}{paper}]
+[\href{https://github.com/DongHyun99/TAVER}{code}]
+
+\vspace{3mm}
+\noindent
+\textbf{Donghyun Han} and Byoung-Dai Lee,
+``Shadow Feature Refinement Network: Progressive Feature Refinement based on Knowledge Distillation for Effective Shadow Removal,''
+\textbf{Multimedia Systems}, 31 (6), 449, 2025. (SCIE, Q2)
+[\href{https://doi.org/10.1007/s00530-025-02036-5}{paper}]
+[\href{https://github.com/DongHyun99/SFRNet}{code}]
+
+% =====================================================================================================
+
+\section{\textbf{Domestic Publications}}
+
+\noindent
+Joong-won Hwang, Kimin Yun, \textbf{Donghyun Han}, and Yuseok Bae,
+``Emerging Trends in AI Research Driven by Foundation Models,''
+\textbf{Electronics and Telecommunications Trends}, 2025.
+
+\vspace{2mm}
+
+\noindent
+Kang-Hyun Lee, Yuseok Bae, and \textbf{Donghyun Han},
+``Effective Visual Expert Routing for Multi-Task Learning,''
+\textbf{IEIE Conference}, 2025.
+
+\vspace{2mm}
+
+\noindent
+\textbf{Donghyun Han} and Hyung-Il Kim,
+``Synergistic Effects of Combining Large Vision Encoders for Visual Recognition,''
+\textbf{IPIU 2025}, 2025.
+
+\vspace{2mm}
+
+\noindent
+Chan Lee, \textbf{Donghyun Han}, Yuseok Bae, Yongseok Cheon, and Hyung-Il Kim,
+``Outdoor Advertisement Classification Using LLM Integrated with Scene Text Recognition Results,''
+\textbf{AI Signal Processing Workshop}, 2024.
+
+\vspace{2mm}
+
+\noindent
+Won-Jun Noh, Ki-Ryum Moon, \textbf{Donghyun Han}, and Byoung-Dai Lee,
+``Deep Learning-Based Automatic Measurement System for Radiographic Indicators in Flatfoot Diagnosis,''
+\textbf{KIIS Fall Conference}, 2023.
+
+\vspace{2mm}
+
+\noindent
+\textbf{Donghyun Han} and Byoung-Dai Lee,
+``Deep Shadow Feature Refinement Network for Shadow Removal,''
+\textbf{KIIS Spring Conference}, 2023.
+
+\vspace{2mm}
+
+\noindent
+Won-Jun Noh, Ki-Ryum Moon, \textbf{Donghyun Han}, and Byoung-Dai Lee,
+``Development of a Lightweight Deep Learning Algorithm for Human Pose Estimation,''
+\textbf{KICS Winter Conference}, 2023.
+
+\vspace{2mm}
+
+\noindent
+\textbf{Donghyun Han}, Min-Jong Kim, Tae-Kang Kim, Joon-Hoo Park, Su-Bin Jo, and Sang-Jin Kim,
+``Development of a Deep Learning-Based Object Detection System for Cell Counting,''
+\textbf{KIIT Undergraduate Paper Competition}, 2022.
+
+\vspace{2mm}
+
+\noindent
+\textbf{Donghyun Han}, Ki-Ryum Moon, and Byoung-Dai Lee,
+``GP-Based Pediatric Bone Age Assessment Using Deep Neural Networks,''
+\textbf{KIIS Fall Conference}, 2021.
+
+% =====================================================================================================
+
+\section{\textbf{Patent Applications}}
+
+\noindent
+차분 기반 보정을 이용한 인공 신경망의 복원 방법, 장치 및 시스템,
+KR Patent Application No. 2026-0216998, filed Nov. 2026.
+
+\vspace{2mm}
+
+\noindent
+Method and Device for Performing Task-Adaptive Visual Expert Routing Operations,
+US Patent Application No. 19/715694, filed Jun. 2026.
+
+\vspace{2mm}
+
+\noindent
+태스크 적응형 시각 전문가 라우팅 동작을 수행하는 방법 및 장치,
+KR Patent Application No. 2026-0103216, filed Jun. 2026.
+
+% =====================================================================================================
+
+\section{\textbf{Honors and Awards}}
+
+\begin{itemize}[leftmargin=0pt,label={}]
+\item Top 10\% (78th of 844 teams), LG Aimers Data Intelligence, LG AI Research, 2024.
+\item Encouragement Prize, Digital Pathology AI Hackathon, Catholic University of Korea, 2023.
+\item Bronze Prize, Undergraduate Paper Competition, KIIT, 2022.
+\item Grand Prize, HealthHub Datathon, HealthHub, 2021.
+\item Silver Prize, Open Source Software Developer Competition, Ministry of Science and ICT, 2021.
+\item Gold Prize, Capstone Design and Idea Hackathon, KIIS, 2021.
+\item Outstanding Business Plan Award \& Encouragement Prize, SW Startup Competition, Kyonggi University SW-Centered University Program, 2021.
+\item Outstanding Prize, Programming Competition, Kyonggi University, 2017.
+\end{itemize}
+
+% =====================================================================================================
+
+\end{document}
