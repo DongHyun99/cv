@@ -34,7 +34,7 @@ const ICON = {
   cap: '<path d="M12 4 1 9.5l11 5.5 11-5.5z"/><path d="M5 12.5V17c2 2 12 2 14 0v-4.5l-7 3.5z"/>',
   alpha: '<text x="12" y="18.5" text-anchor="middle" font-family="Georgia, serif" font-size="21" font-weight="700">α</text>',
   github: '<path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.1.79-.25.79-.56v-1.97c-3.2.7-3.87-1.54-3.87-1.54-.52-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.03 1.76 2.69 1.25 3.35.96.1-.74.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.28 1.18-3.09-.12-.29-.51-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.18 1.83 1.18 3.09 0 4.42-2.69 5.39-5.25 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/>',
-  in: '<rect x="2" y="2" width="20" height="20" rx="4"/><path d="M7 10v7M7 7v.01M11 17v-7M11 13c0-2 1.2-3 2.8-3S16.5 11 16.5 13v4" stroke="#fff" stroke-width="2" fill="none"/>',
+  in: '<rect x="2" y="2" width="20" height="20" rx="4"/><path d="M7 10v7M7 7v.01M11 17v-7M11 13c0-2 1.2-3 2.8-3S16.5 11 16.5 13v4" style="stroke:var(--bg)" stroke-width="2" fill="none"/>',
   x: '<path d="M4 4l16 16M20 4 4 20" stroke="currentColor" stroke-width="2.4"/>',
   doc: '<path d="M6 2h9l5 5v15H6z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M9 12h7M9 16h7" stroke="currentColor" stroke-width="2"/>',
 };
@@ -237,7 +237,7 @@ function renderResearch(doc) {
     const side = [f.period && `<span class="rp">${inline(f.period)}</span>`, f.org && `<span class="ro">${inline(f.org)}</span>`].filter(Boolean).join("");
     return `<article class="rc">
       <div class="rs">${side}</div>
-      <div class="rm"><h3>${inline(e.title)}</h3>${tags ? `<div class="rh">${tags}</div>` : ""}
+      <div class="rm"><h3>${inline(e.title)}</h3>${f.focus ? `<div class="rfc">${inline(f.focus)}</div>` : ""}${tags ? `<div class="rh">${tags}</div>` : ""}
       <div class="rb">${renderBody(e.body)}</div>
       ${researchMedia(f, e.title)}
       ${f.metric ? `<div class="met"><span>Output</span>${inline(f.metric)}</div>` : ""}</div></article>`;
@@ -309,6 +309,13 @@ async function load(file) {
 }
 
 async function main() {
+  // 다크/라이트 전환. 초기값은 index.html <head> 에서 정한다
+  document.getElementById("theme")?.addEventListener("click", () => {
+    const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+    document.documentElement.dataset.theme = next;
+    localStorage.setItem("theme", next);
+  });
+
   const root = document.getElementById("content");
   // 배포본은 빌드 때 내용이 이미 들어 있다. 로컬 미리보기는 여기서 md 를 읽어 그린다.
   if (!root.dataset.prerendered) {

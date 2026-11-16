@@ -13,9 +13,10 @@
   주의: 글머리표를 "단어: ..." 로 시작하면 key 로 읽히니 콜론으로 시작하지 말 것.
 -->
 
-## Competency-Aware Expert Routing for Vision Foundation Models
+## Competency-Aware Machine Learning (CAML)
+- focus: Expert routing over vision foundation models
 - tag: Vision Foundation Models, National R&D
-- org: ETRI · CAML (IITP)
+- org: ETRI · IITP
 - period: 2025.02 – present
 - metric: ICT Express 2026 (SCIE, Q1) · arXiv 2026 · KR/US patent applications
 - video: https://youtu.be/g10wZSveKRg
@@ -53,7 +54,8 @@ Automatically finds illegal banners and outdoor ads in street and CCTV footage b
 - Added object tracking so text is not re-read on every frame, and built lightweight models for deployment.
 
 <!-- ETRI 내부 과제번호 19GH1400, 연구책임자 장인성. KAIA 과제 147287 (2018.04 – 2022.12) -->
-## Realistic 3D City Models: Shadow-Free Building Textures
+## Development of Customized Realistic 3D Geospatial Information Update and Utilization Technology Based on Consumer Demand
+- focus: Shadow-free building textures for 3D city models
 - tag: Image Restoration, 3D Geospatial
 - org: ETRI (Internship) · KGU (M.S.)
 - period: 2022.07 – 2025.02

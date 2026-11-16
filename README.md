@@ -131,6 +131,7 @@ uv run --with pymupdf python -c "import pymupdf,sys;p=pymupdf.open(sys.argv[1])[
 | `## 과제/연구 이름` | 예: `Competency-Aware Machine Learning (CAML)` |
 | `tag` | 분야·과제 키워드, 쉼표로 **최대 2개** (3개 이상 적으면 앞의 2개만 표시): `National R&D, Vision Foundation Models` |
 | `org`, `period` | (선택) 수행 기관, 기간 — 왼쪽 열 |
+| `focus` | (선택) 과제 안에서 내가 맡은 부분 한 줄 — 제목 바로 아래 파란 글씨 |
 | `metric` | (선택) 성과 한 줄 — 맨 아래 초록 `OUTPUT` 줄 |
 | `image` | (선택) 과제 대표 그림 한 장, 예: `images/research/shadow.png`. 설명 아래 16:9 칸에 표시 |
 | `video` | (선택) YouTube 주소. YouTube 썸네일 + 재생 버튼으로 표시되고 누르면 영상으로 이동. `image`도 있으면 그 그림을 썸네일로 씀 |
@@ -176,4 +177,5 @@ uv run --with pymupdf python -c "import pymupdf,sys;p=pymupdf.open(sys.argv[1])[
 ## 그 밖에
 
 - 섹션 순서·이름 변경, 섹션 빼기: `assets/app.js` 맨 위 `SECTIONS`.
-- 포인트 색 변경: `assets/style.css` 맨 위 `--ac`(진한 색), `--soft`(연한 배경).
+- 포인트 색 변경: `assets/style.css` 맨 위 `--ac`(진한 색), `--soft`(연한 배경). 다크 모드 색은 바로 아래 `:root[data-theme="dark"]`.
+- 다크/라이트: 오른쪽 위 버튼으로 전환. 처음 방문하면 기기 설정을 따르고, 한 번 누르면 브라우저에 기억된다.
