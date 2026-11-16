@@ -6,6 +6,7 @@
   아래 일반 문단이 소개(bio)가 되고, **굵게** 쓴 부분은 포인트 색으로 강조됩니다.
 -->
 
+- native: 한동현
 - photo: images/profile.jpg
 - keywords: Vision Foundation Models · Multimodal Learning · Efficient VLMs
 - position: Post-M.S. Researcher, Visual Intelligence Research Section

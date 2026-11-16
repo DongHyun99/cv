@@ -9,7 +9,7 @@ const SECTIONS = [
   { id: "news", title: "News", file: "news.md", render: renderNews },
   { id: "publications", title: "Publications", file: "publications.md", render: renderPubs },
   { id: "patents", title: "Patents", file: "patents.md", render: renderPatents },
-  { id: "research", title: "Research", file: "research.md", render: renderResearch },
+  { id: "research", title: "Research Projects", file: "research.md", render: renderResearch },
   { id: "experience", title: "Experience", file: "experience.md", render: renderTimeline },
   { id: "education", title: "Education", file: "education.md", render: renderTimeline },
   { id: "awards", title: "Awards", file: "awards.md", render: renderAwards },
@@ -149,7 +149,7 @@ function renderProfile(doc) {
     return `<a href="${esc(href)}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">${ICON[ic]}</svg>${label}</a>`;
   }).join("");
   return `<section id="about"><div class="hero">${photo}<div>
-      <h1>${inline(name)}</h1>
+      <h1>${inline(name)}${f.native ? `<span class="nn" lang="ko">${esc(f.native)}</span>` : ""}</h1>
       ${f.keywords ? `<div class="kw">${inline(f.keywords)}</div>` : ""}
       <div class="sub">${[f.position, f.affiliation].filter(Boolean).map(inline).join(" · ")}</div>
       <div class="links">${links}</div></div></div>
@@ -159,8 +159,11 @@ function renderProfile(doc) {
 
 function renderNews(doc) {
   return `<table>${byDate(doc.entries).map(e =>
-    `<tr><td>${when(e)}</td><td>${badge(e.fields.type)}${inline(e.title)}${desc(e)}</td></tr>`).join("")}</table>`;
+    `<tr><td>${when(e)}</td><td><div class="nw">${badge(e.fields.type)}<div>${inline(e.title)}${desc(e)}</div></div></td></tr>`).join("")}</table>`;
 }
+
+// 저자 이름 바로 뒤의 *, †, ‡ (공동 1저자·교신저자 표시)는 위첨자로
+const authors = s => inline(s || "").replace(/(<\/strong>|[^\s,*†‡])([*†‡]+)(?=,|$)/g, "$1<sup>$2</sup>");
 
 const topicsOf = p => [...new Set((p.fields.topic || "").split(",").map(t => t.trim()).filter(Boolean))];
 
@@ -192,9 +195,10 @@ function renderPubs(doc) {
     const btns = PUB_LINKS.filter(k => f[k]).map(k => k === "bibtex" && bib
       ? `<button type="button" data-bib="${esc(encodeURI(bib))}">bibtex</button>`
       : `<a href="${esc(f[k])}" target="_blank" rel="noopener">${k}</a>`).join("");
+    const tags = (f.tag || "").split(",").map(t => t.trim()).filter(Boolean);
     html += `<div class="pub" data-year="${y}" data-topic="${esc(topicsOf(p).join("|"))}">${thumb}<div>
-      <div class="ven">${inline(f.venue || "")}${f.tag ? f.tag.split(",").map(t => badge(t.trim(), "hl")).join("") : ""}</div>
-      <h3>${inline(p.title)}</h3><div class="au">${inline(f.authors || "")}</div>${desc(p)}
+      <h3>${inline(p.title)}</h3><div class="au">${authors(f.authors)}${f.note ? `<span class="an">${inline(f.note)}</span>` : ""}</div>
+      <div class="ven">${inline(f.venue || "")}${tags.map(t => badge(t, "hl")).join("")}</div>${desc(p)}
       ${btns ? `<div class="act">${btns}</div>` : ""}
       ${bib ? bibBox(bib) : ""}</div></div>`;
   }
@@ -209,6 +213,22 @@ function bibBox(path) {
 
 const MAX_RESEARCH_TAGS = 2;  // Research 카드에 보이는 태그 수
 
+// YouTube 주소(watch?v=, youtu.be/, shorts/, embed/)에서 영상 ID
+const youtubeId = u => (String(u).match(/(?:youtu\.be\/|[?&]v=|\/shorts\/|\/embed\/)([\w-]{11})/) || [])[1];
+
+// 과제당 그림 하나: image 만 있으면 그림, video 가 있으면 썸네일(image 또는 YouTube 썸네일) + 재생 버튼으로 영상 링크
+function researchMedia(f, title) {
+  const alt = esc(f.caption || title.replace(/[*`]/g, ""));
+  const yt = f.video && youtubeId(f.video);
+  const src = f.image ? encodeURI(f.image) : yt ? `https://i.ytimg.com/vi/${yt}/hqdefault.jpg` : "";
+  if (!src) return "";
+  const img = `<img src="${esc(src)}" alt="${alt}" loading="lazy">`;
+  const media = f.video
+    ? `<a class="rv" href="${esc(f.video)}" target="_blank" rel="noopener" aria-label="Watch video: ${alt}">${img}<span class="play"></span></a>`
+    : img;
+  return `<figure class="rf">${media}${f.caption ? `<figcaption>${inline(f.caption)}</figcaption>` : ""}</figure>`;
+}
+
 // 한 줄에 한 과제: 왼쪽 기간·기관 | 오른쪽 제목 · 태그 · 설명 · 성과
 function renderResearch(doc) {
   return `<div class="rl">${byDate(doc.entries).map(e => {
@@ -219,6 +239,7 @@ function renderResearch(doc) {
       <div class="rs">${side}</div>
       <div class="rm"><h3>${inline(e.title)}</h3>${tags ? `<div class="rh">${tags}</div>` : ""}
       <div class="rb">${renderBody(e.body)}</div>
+      ${researchMedia(f, e.title)}
       ${f.metric ? `<div class="met"><span>Output</span>${inline(f.metric)}</div>` : ""}</div></article>`;
   }).join("")}</div>`;
 }
@@ -228,7 +249,7 @@ function renderPatents(doc) {
   return `<table>${byDate(doc.entries).map(e => {
     const f = e.fields;
     const sub = [f.number && `Application No. ${inline(f.number)}`, f.status && inline(f.status)].filter(Boolean).join(" · ");
-    return `<tr><td>${when(e)}</td><td>${badge(f.office)}${inline(e.title)}${sub ? `<br><span class="mut">${sub}</span>` : ""}${desc(e)}</td></tr>`;
+    return `<tr><td>${when(e)}</td><td>${badge(f.office, "bd pt")}${inline(e.title)}${sub ? `<br><span class="mut">${sub}</span>` : ""}${desc(e)}</td></tr>`;
   }).join("")}</table>`;
 }
 

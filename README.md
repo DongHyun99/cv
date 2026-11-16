@@ -67,6 +67,7 @@ CV/
 | 키 | 설명 |
 |---|---|
 | `# 이름` | 맨 위 제목 줄이 이름 (브라우저 탭 제목도 됨) |
+| `native` | (선택) 이름 옆에 작게 붙는 다른 표기, 예: `한동현` |
 | `photo` | 사진 경로, 예: `images/profile.jpg` |
 | `keywords` | 이름 아래 파란 키워드 줄 |
 | `position`, `affiliation` | 직함, 소속 |
@@ -80,9 +81,10 @@ CV/
 |---|---|
 | `date` | 정렬 + 연도 구분(2026 / 2025 …) 기준 |
 | `venue` | 학회·저널명 |
-| `tag` | 배지. 쉼표로 여러 개 가능: `Oral, Best Paper` |
+| `tag` | venue 뒤에 ` · `로 이어 붙는 부가 정보. 쉼표로 여러 개: `SCIE, Q1, IF 4.6`, `Oral` |
 | `topic` | 필터 버튼. 논문당 1–2개, 여러 논문에 같은 이름을 재사용: `Vision-Language, Efficient Inference`. 버튼은 해당 논문이 많은 주제부터 정렬 |
-| `authors` | 저자. 본인 이름은 `**굵게**` |
+| `authors` | 저자. 본인 이름은 `**굵게**`. 이름 바로 뒤의 `*` `†` `‡`는 위첨자: `**Your Name***†, Coauthor*` |
+| `note` | (선택) 저자 줄 끝에 작게: `* Equal contribution · † Corresponding author` |
 | `short` | 썸네일 대신 보일 짧은 이름 + 썸네일 파일명 |
 | `thumb` | (선택) 썸네일 경로를 직접 지정 |
 | `paper` `arxiv` `pdf` `code` `project` `slides` `poster` `video` | 있는 것만 버튼으로 표시 |
@@ -109,7 +111,7 @@ uv run --with pymupdf python -c "import pymupdf,sys;p=pymupdf.open(sys.argv[1])[
 | `## 특허 제목` | |
 | `office` | 배지: `US`, `KR`, `PCT` … |
 | `number` | (선택) 출원·등록 번호 |
-| `status` | (선택) `Filed`, `Granted` … |
+| `status` | (선택) `Pending`(출원 중), `Granted`(등록) … |
 | `date` | 정렬 기준 (출원일) |
 
 ### `news.md`
@@ -130,6 +132,9 @@ uv run --with pymupdf python -c "import pymupdf,sys;p=pymupdf.open(sys.argv[1])[
 | `tag` | 분야·과제 키워드, 쉼표로 **최대 2개** (3개 이상 적으면 앞의 2개만 표시): `National R&D, Vision Foundation Models` |
 | `org`, `period` | (선택) 수행 기관, 기간 — 왼쪽 열 |
 | `metric` | (선택) 성과 한 줄 — 맨 아래 초록 `OUTPUT` 줄 |
+| `image` | (선택) 과제 대표 그림 한 장, 예: `images/research/shadow.png`. 설명 아래 16:9 칸에 표시 |
+| `video` | (선택) YouTube 주소. YouTube 썸네일 + 재생 버튼으로 표시되고 누르면 영상으로 이동. `image`도 있으면 그 그림을 썸네일로 씀 |
+| `caption` | (선택) 그림 아래 작은 설명 |
 | `date` | (선택) 있으면 최신순, 없으면 적은 순서대로 |
 
 그 아래 첫 문단은 "무엇을 왜 했는지" 한두 문장(진하게 표시), `- ` 로 시작하는 줄은 내가 한 일 목록이 된다. 글머리표를 `단어: …` 처럼 콜론으로 시작하면 키로 읽히니 피할 것(`- **TAVER** — …` 처럼 쓰면 안전).
@@ -149,7 +154,7 @@ uv run --with pymupdf python -c "import pymupdf,sys;p=pymupdf.open(sys.argv[1])[
 
 ## 배지 색
 
-`tag`(논문)와 `type`(뉴스) 배지 색은 단어를 보고 자동으로 정해진다.
+`type`(뉴스) 배지 색은 단어를 보고 자동으로 정해진다. 논문 `tag`는 배지 없이 회색 글자로, 특허 `office`는 회색 배지로 표시된다.
 
 | 포함된 단어 | 색 |
 |---|---|

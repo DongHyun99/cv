@@ -30,6 +30,9 @@ const fill = (re, to) => {
   html = html.replace(re, () => to);
 };
 const escText = s => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+// 배포할 때마다 css/js 주소에 내용 해시를 붙여, 브라우저가 예전 파일을 섯어 쓰지 않게 한다
+const hash = f => require("crypto").createHash("sha1").update(fs.readFileSync(path.join(ROOT, f))).digest("hex").slice(0, 8);
+for (const f of ["assets/style.css", "assets/app.js"]) fill(new RegExp(`"${f}"`), `"${f}?v=${hash(f)}"`);
 fill(/<title>[^<]*<\/title>/, `<title>${escText(page.title)}</title>`);
 fill(/<nav class="mnav" id="mnav"><\/nav>/, `<nav class="mnav" id="mnav">${page.nav}</nav>`);
 fill(/<nav class="toc" id="toc"><\/nav>/, `<nav class="toc" id="toc">${page.nav}</nav>`);
