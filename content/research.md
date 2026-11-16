@@ -31,7 +31,7 @@ Part of the national [CAML project](https://etri-visualintelligence.github.io/ca
 - tag: Vision-Language Models, Efficient Inference
 - org: ETRI · CAML (IITP)
 - period: 2026
-- metric: NeurIPS 2026 Workshop (VLM4RWD)
+- metric: NeurIPS 2026 Workshop (VLM4RWD) · KR patent application
 
 Most of a VLM's cost comes from image tokens, but shrinking them loses small details like text and small objects. **Foveated Compression** keeps a cheap view of the whole image and zooms back to full resolution only on the one region that matters, like the fovea of the human eye.
 
