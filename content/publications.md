@@ -22,7 +22,8 @@
 - note: * Equal contribution · † Corresponding author
 - short: Foveated Compression
 - arXiv: https://arxiv.org/abs/2610.07729
-- code: https://github.com/DongHyun99/FoveatedVLM
+- code: https://github.com/Donghyun99/Foveated-Compression
+- project: https://donghyun99.github.io/Foveated-Compression/
 - bibtex: files/bib/FoveatedCompression.bib
 
 ## Learning to Orchestrate Vision Foundation Models for Multi-Task Dense Prediction

@@ -8,7 +8,7 @@
 
 - native: 한동현
 - photo: images/profile.jpg
-- keywords: Vision Foundation Models · Multimodal Learning · Efficient VLMs
+- keywords: Vision Foundation Models · Vision-Language Models · Embodied AI · World Models
 - position: Post-M.S. Researcher, Visual Intelligence Research Section
 - affiliation: ETRI
 - email: mpolio2@etri.re.kr
@@ -19,6 +19,6 @@
 - cv: files/cv.pdf
 I am a researcher at **ETRI**, Korea, working on vision foundation models and multimodal learning.
 
-Pretrained vision models are each good at different things. I study how to **combine the models we already have** instead of training a new one, by learning which expert to trust for each task. I also work on **efficient vision-language models** that spend visual tokens only where detail matters.
+Pretrained vision models are each good at different things. I study how to **combine the models we already have** instead of training a new one, by learning which expert to trust for each task. I also work on **efficient vision-language models** that spend visual tokens only where detail matters. Going forward, I am interested in **embodied AI** and **world models**.
 
 I received my M.S. in Computer Science from Kyonggi University, where I worked on shadow removal.
