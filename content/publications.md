@@ -58,4 +58,5 @@
 - paper: https://link.springer.com/article/10.1007/s00530-025-02036-5
 - arxiv: https://arxiv.org/abs/2610.05325
 - code: https://github.com/DongHyun99/SFRNet
+- project: https://donghyun99.github.io/SFRNet/
 - bibtex: files/bib/SFR-Net.bib
