@@ -15,11 +15,12 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  deploy:
+  # build 와 deploy 를 같은 job 에 두면 upload-pages-artifact 직후 deploy-pages 가
+  # 아직 인덱싱되지 않은 artifact 를 조회해 "No artifacts named github-pages" 로
+  # 실패하는 레이스 컨디션이 있다 (actions/deploy-pages#451). job 을 분리해 그 사이
+  # 자연스러운 지연을 두면 회피된다.
+  build:
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/configure-pages@v5
@@ -31,5 +32,13 @@ jobs:
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
       - id: deployment
         uses: actions/deploy-pages@v4
